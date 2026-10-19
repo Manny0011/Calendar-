@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090b1b">
+  <meta name="description" content="Orbit Planner — your daily tasks, calendar and goals in one place.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="icon-32.png"><link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>Orbit Planner — Your space to focus</title>
+</head>
+<body>
+  <div class="stars stars-one"></div><div class="stars stars-two"></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">✦</div><div><strong>orbit<span>.</span></strong><small>YOUR SPACE TO FOCUS</small></div></div>
+      <button class="new-task-btn" id="sidebarAdd">＋ <span>New task</span></button>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="main-nav">
+        <button class="nav-item active" data-view="overview"><span>◫</span> Overview</button>
+        <button class="nav-item" data-view="calendar"><span>▦</span> Calendar</button>
+        <button class="nav-item" data-view="tasks"><span>☷</span> All tasks <b id="navTaskCount">0</b></button>
+        <button class="nav-item" data-view="goals"><span>◎</span> Goals</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="mini-orbit"><div class="planet"></div><div class="orbit-ring"></div></div>
+        <p class="quote">“Small steps every day add up to big change.”</p>
+        <div class="sidebar-user"><div class="avatar">N</div><div><strong>My workspace</strong><small>Personal planner</small></div><span class="online-dot"></span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark">✦</span><strong>orbit<span>.</span></strong></div>
+        <div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumbCurrent">Overview</strong></div>
+        <div class="top-actions">
+          <button class="icon-btn notification-btn" id="notifyBtn" title="Notification settings" aria-label="Notification settings">♧<span class="notification-indicator" id="notificationIndicator"></span></button>
+          <button class="date-chip" id="todayBtn">◷ <span id="todayDate"></span></button>
+          <div class="avatar">N</div>
+        </div>
+      </header>
+
+      <section class="view active" id="view-overview">
+        <div class="welcome-row">
+          <div><div class="eyebrow"><span class="live-dot"></span> YOUR PERSONAL COMMAND CENTER</div><h1 id="greeting">Good morning, Noah <span>✦</span></h1><p class="muted" id="welcomeDate">Let's make today count.</p></div>
+          <button class="primary-btn" id="addTaskMain">＋ Create a task</button>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Tasks for today</span><span class="stat-icon purple">◷</span></div><div class="stat-number" id="todayCount">0</div><div class="stat-foot"><span class="tiny-dot purple-dot"></span><span id="todaySub">Your day, one step at a time</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Completed</span><span class="stat-icon green">✓</span></div><div class="stat-number" id="completedCount">0</div><div class="stat-foot"><span class="tiny-dot green-dot"></span><span id="completedSub">Keep the momentum</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Weekly progress</span><span class="stat-icon blue">↗</span></div><div class="stat-number" id="weeklyPercent">0<span class="percent">%</span></div><div class="progress-track"><div class="progress-fill blue-fill" id="weeklyBar"></div></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Goals in progress</span><span class="stat-icon pink">◎</span></div><div class="stat-number" id="goalCount">0</div><div class="stat-foot"><span class="tiny-dot pink-dot"></span><span>Dream it. Plan it. Do it.</span></div></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel today-panel">
+            <div class="panel-heading"><div><h2>Today's focus</h2><p class="muted">Your priorities for today</p></div><button class="text-btn" data-goto="tasks">View all ↗</button></div>
+            <div class="task-list" id="todayTaskList"></div>
+            <button class="add-inline" id="addInline">＋ Add another task</button>
+          </section>
+          <section class="panel calendar-panel">
+            <div class="panel-heading"><div><h2>Calendar</h2><p class="muted" id="miniMonthLabel"></p></div><div class="calendar-arrows"><button id="miniPrev" aria-label="Previous month">‹</button><button id="miniNext" aria-label="Next month">›</button></div></div>
+            <div class="mini-calendar" id="miniCalendar"></div>
+            <div class="calendar-legend"><span><i></i> Has tasks</span><span><i class="legend-today"></i> Today</span></div>
+          </section>
+          <section class="panel week-panel">
+            <div class="panel-heading"><div><h2>This week</h2><p class="muted">A little progress every day</p></div><button class="text-btn" data-goto="calendar">Full calendar ↗</button></div>
+            <div class="week-strip" id="weekStrip"></div>
+            <div class="week-summary"><div><span class="muted">Tasks completed</span><strong id="weekDone">0 / 0</strong></div><div class="progress-track"><div class="progress-fill" id="weekSummaryBar"></div></div></div>
+          </section>
+          <section class="panel goals-panel">
+            <div class="panel-heading"><div><h2>Monthly goals</h2><p class="muted">Keep your eyes on the bigger picture</p></div><button class="text-btn" data-goto="goals">All goals ↗</button></div>
+            <div id="goalPreview"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="view-calendar">
+        <div class="page-heading"><div><div class="eyebrow">PLAN WITH PURPOSE</div><h1>Your calendar <span>✦</span></h1><p class="muted">Every good plan starts with a date.</p></div><button class="primary-btn" id="calendarAdd">＋ Add task</button></div>
+        <section class="panel full-calendar-panel">
+          <div class="calendar-toolbar"><div class="calendar-title"><button id="calPrev" class="arrow-btn">‹</button><h2 id="calendarTitle"></h2><button id="calNext" class="arrow-btn">›</button></div><div class="view-switch"><button class="selected" data-calview="month">Month</button><button data-calview="week">Week</button><button data-calview="day">Day</button></div></div>
+          <div id="fullCalendar" class="full-calendar"></div>
+          <div class="selected-date-tasks"><div class="panel-heading"><div><h3 id="selectedDateTitle">Selected day</h3><p class="muted">Tasks planned for this date</p></div><button class="text-btn" id="selectedAdd">＋ Add task</button></div><div id="selectedDayList" class="task-list"></div></div>
+        </section>
+      </section>
+
+      <section class="view" id="view-tasks">
+        <div class="page-heading"><div><div class="eyebrow">MAKE IT HAPPEN</div><h1>All tasks <span>✦</span></h1><p class="muted">One task at a time. You've got this.</p></div><button class="primary-btn" id="tasksAdd">＋ Create a task</button></div>
+        <section class="panel">
+          <div class="task-controls"><div class="search-box">⌕ <input id="taskSearch" placeholder="Search your tasks..." aria-label="Search tasks"></div><select id="taskFilter" aria-label="Filter tasks"><option value="all">All tasks</option><option value="pending">Pending</option><option value="completed">Completed</option><option value="high">High priority</option></select><select id="taskSort" aria-label="Sort tasks"><option value="date">Sort: Date</option><option value="priority">Sort: Priority</option><option value="created">Sort: Recently added</option></select></div>
+          <div id="allTaskList" class="task-list"></div>
+        </section>
+      </section>
+
+      <section class="view" id="view-goals">
+        <div class="page-heading"><div><div class="eyebrow">THINK BIG, START SMALL</div><h1>Your goals <span>✦</span></h1><p class="muted">Turn your plans into progress.</p></div><button class="primary-btn" id="addGoalBtn">＋ Add a goal</button></div>
+        <div class="goal-intro"><div class="goal-intro-icon">✧</div><div><strong>Your future is built by what you do today.</strong><p>Set a target, track your progress, and celebrate every win.</p></div></div>
+        <div class="goals-grid" id="allGoals"></div>
+      </section>
+      <footer>Made for your next chapter <span>✦</span><small>Your tasks are saved on this device.</small></footer>
+    </main>
+  </div>
+
+  <nav class="mobile-nav">
+    <button class="active" data-view="overview"><span>◫</span>Home</button><button data-view="calendar"><span>▦</span>Calendar</button><button data-view="tasks"><span>☷</span>Tasks</button><button data-view="goals"><span>◎</span>Goals</button>
+  </nav>
+
+  <div class="modal-backdrop" id="taskModal" aria-hidden="true">
+    <form class="modal" id="taskForm">
+      <div class="modal-head"><div><div class="eyebrow">MAKE IT REAL</div><h2 id="taskModalTitle">Create a task</h2></div><button type="button" class="close-btn" data-close="taskModal">×</button></div>
+      <label>Task name<input id="taskTitle" required maxlength="120" placeholder="e.g. Practice JavaScript arrays"></label>
+      <label>Notes <textarea id="taskNotes" rows="2" placeholder="Any details to remember?"></textarea></label>
+      <div class="form-row"><label>Date<input type="date" id="taskDate" required></label><label>Time <input type="time" id="taskTime"></label></div>
+      <div class="form-row"><label>Priority<select id="taskPriority"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></label><label>Category<select id="taskCategory"><option>Study</option><option>Personal</option><option>Work</option><option>Health</option><option>Other</option></select></label></div>
+      <label class="reminder-check"><input type="checkbox" id="taskReminder" checked> Remind me at the task time (while this app is open)</label>
+      <div class="modal-actions"><button type="button" class="secondary-btn" data-close="taskModal">Cancel</button><button class="primary-btn" type="submit">Save task ✦</button></div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop" id="goalModal" aria-hidden="true">
+    <form class="modal" id="goalForm">
+      <div class="modal-head"><div><div class="eyebrow">AIM FOR SOMETHING</div><h2 id="goalModalTitle">Add a goal</h2></div><button type="button" class="close-btn" data-close="goalModal">×</button></div>
+      <label>Goal title<input id="goalTitle" required maxlength="100" placeholder="e.g. Finish React fundamentals"></label>
+      <label>Goal type<select id="goalType"><option value="weekly">Weekly goal</option><option value="monthly" selected>Monthly goal</option></select></label>
+      <label>Target date<input type="date" id="goalDate" required></label>
+      <label>Target steps<input type="number" id="goalTarget" min="1" max="1000" value="5" required></label>
+      <label>Icon<select id="goalIcon"><option value="✦">✦ Star</option><option value="⌘">⌘ Focus</option><option value="◈">◈ Growth</option><option value="☾">☾ Balance</option><option value="⚡">⚡ Energy</option></select></label>
+      <div class="modal-actions"><button type="button" class="secondary-btn" data-close="goalModal">Cancel</button><button class="primary-btn" type="submit">Save goal ✦</button></div>
+    </form>
+  </div>
+  <div class="modal-backdrop" id="notificationModal" aria-hidden="true">
+    <form class="modal notification-modal" id="notificationForm">
+      <div class="modal-head"><div><div class="eyebrow">STAY ON TRACK</div><h2>Notification settings</h2><p class="muted">Choose what Orbit should remind you about.</p></div><button type="button" class="close-btn" data-close="notificationModal">×</button></div>
+      <div class="notification-permission" id="notificationPermission"><span class="permission-icon">♧</span><div><strong>Browser notifications</strong><small id="permissionText">Permission not checked yet</small></div><button type="button" class="secondary-btn" id="permissionAction">Enable</button></div>
+      <div class="notification-option"><div><strong>Task reminders</strong><small>Notify me at the time set on each task.</small></div><label class="switch"><input type="checkbox" id="prefTaskReminders" checked><span></span></label></div>
+      <div class="notification-option"><div><strong>Pending tasks digest</strong><small>Daily reminder about unfinished tasks.</small><label class="time-label">Remind me at <input type="time" id="pendingReminderTime" value="20:00"></label></div><label class="switch"><input type="checkbox" id="prefPending" checked><span></span></label></div>
+      <div class="notification-option"><div><strong>Goal deadline reminders</strong><small>Alert me when a goal is due today and still incomplete.</small></div><label class="switch"><input type="checkbox" id="prefGoals" checked><span></span></label></div>
+      <div class="notification-option"><div><strong>Weekly progress check-in</strong><small>Sunday evening summary of tasks completed this week.</small><label class="time-label">Remind me at <input type="time" id="weeklyReminderTime" value="19:00"></label></div><label class="switch"><input type="checkbox" id="prefWeekly" checked><span></span></label></div>
+      <p class="notification-note">Important: scheduled reminders run while Orbit is open. Notifications after the browser is fully closed need a push service/backend. Your preferences are saved on this device.</p>
+      <div class="modal-actions"><button type="button" class="secondary-btn" id="testNotification">Send test</button><button type="button" class="secondary-btn" data-close="notificationModal">Cancel</button><button class="primary-btn" type="submit">Save preferences ✦</button></div>
+    </form>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
